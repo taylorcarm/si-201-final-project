@@ -120,7 +120,16 @@ def main():
 
     conn.close()
 
+    
+
 if __name__ == "__main__":
     main()
+<<<<<<< HEAD
 #this is a test
 
+=======
+
+
+
+#will add spotify now
+>>>>>>> d9827344b4dee30badd7f55b68e268d3bf415075
