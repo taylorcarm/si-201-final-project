@@ -119,6 +119,22 @@ def main():
 
     conn.close()
 
+CREATE TABLE IF NOT EXISTS spotify_features (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lastfm_id INTEGER,
+    tempo REAL,
+    energy REAL,
+    valence REAL,
+    danceability REAL,
+    popularity INTEGER,
+    FOREIGN KEY (lastfm_id) REFERENCES lastfm_tracks(id)
+);
+
+    
+
 if __name__ == "__main__":
     main()
+
+
+
 #will add spotify now
