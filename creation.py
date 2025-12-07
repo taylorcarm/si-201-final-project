@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # practing!
 import os
 import shutil
@@ -121,3 +122,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+=======
+#this is a test
+>>>>>>> 71f6cee3fb243418f62a5fea439a6ef10e6d1a72
