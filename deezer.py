@@ -51,32 +51,6 @@ def fetch_deezer_data():
 
     return results 
 
-
-  #  print("\nFetching 25 tracks from Deezer")
-
-   # url = f"{BASE_URL}/chart/0/tracks"
-    #params = {'limit': 25}
-
-    #response = requests.get(url, params=params)
-
-    #if not response.ok:
-     #    print(f"Error fetching data: {response.status_code}")
-     #    return []
-    
-   #  tracks = response.json().get('data', [])
-
-   #  results = []
-   #  for track in tracks:
-   #      results.append({
-   #          'track_name': track.get('title', ''),
-   #          'artist': track['artist']['name'],
-   #          'rank': track.get('rank', 0),
-   #          'explicit_lyrics': track.get('explicit_lyrics', False)
-   #      })
-
-   #  print(f"Fetching {len(results)} tracks from Deezer")
-   #  return results 
-
 def store_deezer_data(deezer_tracks):    
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
