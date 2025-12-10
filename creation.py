@@ -150,7 +150,7 @@ def create_database(db_name = 'music.sqlite'):
     cur.execute('''
         CREATE TABLE IF NOT EXISTS deezer_data (
             id INTEGER PRIMARY KEY,
-            lastfm_id INTEGER,
+            lastfm_id INTEGER UNIQUE,
             rank INTEGER,
             explicit_lyrics BOOLEAN
         )
@@ -169,6 +169,17 @@ def create_database(db_name = 'music.sqlite'):
     # ''')
     cur.execute('DROP TABLE IF EXISTS spotify_features')
 
+    # cur.execute('''
+    #     CREATE TABLE spotify_features (
+    #         track_id TEXT PRIMARY KEY,
+    #         track_name TEXT,
+    #         artist TEXT,
+    #         danceability REAL,
+    #         energy REAL,
+    #         valence REAL,
+    #         tempo REAL
+    #     )
+    # ''')
     cur.execute('''
         CREATE TABLE spotify_features (
             track_id TEXT PRIMARY KEY,
@@ -187,6 +198,19 @@ def create_database(db_name = 'music.sqlite'):
             id INTEGER PRIMARY KEY,
             lastfm_id INTEGER,
             lyrics TEXT
+        )
+    ''')
+
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS musicbrainz_data (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            lastfm_id INTEGER NOT NULL,
+            musicbrainz_id TEXT,
+            release_title TEXT,
+            album_title TEXT,
+            release_date TEXT,
+            country TEXT,
+            FOREIGN KEY(lastfm_id) REFERENCES lastfm_tracks(id)
         )
     ''')
 
