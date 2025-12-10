@@ -156,15 +156,28 @@ def create_database(db_name = 'music.sqlite'):
         )
     ''')
 
-    # Spotify features table (linked to lastfm_tracks via lastfm_id)
+    # # Spotify features table (linked to lastfm_tracks via lastfm_id)
+    # cur.execute('''
+    #     CREATE TABLE IF NOT EXISTS spotify_features (
+    #         id INTEGER PRIMARY KEY,
+    #         lastfm_id INTEGER,
+    #         tempo REAL,
+    #         energy REAL,
+    #         valence REAL,
+    #         danceability REAL
+    #     )
+    # ''')
+    cur.execute('DROP TABLE IF EXISTS spotify_features')
+
     cur.execute('''
-        CREATE TABLE IF NOT EXISTS spotify_features (
-            id INTEGER PRIMARY KEY,
-            lastfm_id INTEGER,
-            tempo REAL,
+        CREATE TABLE spotify_features (
+            track_id TEXT PRIMARY KEY,
+            track_name TEXT,
+            artist TEXT,
+            danceability REAL,
             energy REAL,
             valence REAL,
-            danceability REAL
+            tempo REAL
         )
     ''')
 
