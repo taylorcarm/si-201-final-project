@@ -130,6 +130,7 @@ import json
 
 
 # #will add spotify now
+# new comment to text kristens github error
 def create_database(db_name = 'music.sqlite'):
     conn = sqlite3.connect(db_name)
     cur = conn.cursor()
