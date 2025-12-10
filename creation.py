@@ -150,7 +150,7 @@ def create_database(db_name = 'music.sqlite'):
     cur.execute('''
         CREATE TABLE IF NOT EXISTS deezer_data (
             id INTEGER PRIMARY KEY,
-            lastfm_id INTEGER,
+            lastfm_id INTEGER UNIQUE,
             rank INTEGER,
             explicit_lyrics BOOLEAN
         )
