@@ -1,3 +1,5 @@
+# pip3 install requests 
+
 import sqlite3
 import requests
 

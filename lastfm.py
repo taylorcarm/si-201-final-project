@@ -1,38 +1,38 @@
-DB_NAME = 'music.sqlite'
-# do fetch data function and insert data function
-# instert the info into deezer_data which will be a table in the one database
-# the lastfm id will be the foreign key
-# use track_name and artist from lastfm table to know which songs
-# i think we want the rank and explicit lyrics info?
+# DB_NAME = 'music.sqlite'
+# # do fetch data function and insert data function
+# # instert the info into deezer_data which will be a table in the one database
+# # the lastfm id will be the foreign key
+# # use track_name and artist from lastfm table to know which songs
+# # i think we want the rank and explicit lyrics info?
 
 import requests
 import sqlite3
 
-# constants
-last_fm_apikey = '46bcaf58397c885570ddf19732a63625'
-db_name = 'music.sqlite'
-max_tracks = 25
-genres = ['hip-hop', 'rock', 'rnb', 'pop']
+
+DB_NAME = 'music.sqlite'
+LAST_FM_APIKEY = '46bcaf58397c885570ddf19732a63625'
+MAX_TRACKS_PER_RUN = 25
+GENRES = ['hip-hop', 'rock', 'rnb', 'pop']
 
 
-def fetch_lastfm_data(genre, max_tracks=max_tracks):
-    # fetches top 25 tracks for each genre and returns dict with track info
+def fetch_lastfm_data(genre):
+    # get top 25 tracks for each genre
     base_url = 'http://ws.audioscrobbler.com/2.0/'
     params = {
         'method': 'tag.gettoptracks',
         'tag': genre,
-        'api_key': last_fm_apikey,
+        'api_key': LAST_FM_APIKEY,
         'format': 'json',
-        'limit': max_tracks
+        'limit': 25  # Last.fm returns top 25 tracks per genre
     }
 
     response = requests.get(base_url, params=params)
     if not response.ok:
-        print(f"failed fetching {genre}, status code: {response.status_code}")
+        print(f"Failed fetching {genre}, status code: {response.status_code}")
         return []
 
     data = response.json()
-    tracks = data.get('tracks', {}).get('track', [])[:max_tracks]
+    tracks = data.get('tracks', {}).get('track', [])
 
     results = []
     for track in tracks:
@@ -42,47 +42,57 @@ def fetch_lastfm_data(genre, max_tracks=max_tracks):
             'genre': genre,
             'duration': int(track.get('duration', 0))
         })
-
     return results
 
 
-def insert_tracks_into_db(tracks, cur, conn):
-    # adds the list of tracks to database
+def insert_new_tracks(tracks, cur, conn, remaining_limit):
+    # insert only new tracks after cycling through genres, keep limti to 25
     count_added = 0
     for track in tracks:
-        cur.execute('''
-            INSERT OR IGNORE INTO lastfm_tracks
-            (track_name, artist, genre, duration)
-            VALUES (?, ?, ?, ?)
-        ''', (
-            track['track_name'],
-            track['artist'],
-            track['genre'],
-            track['duration']
-        ))
+        if count_added >= remaining_limit:
+            break
 
-        count_added += cur.rowcount  # increments only when inserted
+        # seeing if track exists
+        cur.execute('''
+            SELECT id FROM lastfm_tracks
+            WHERE track_name=? AND artist=? AND genre=?
+        ''', (track['track_name'], track['artist'], track['genre']))
+        if cur.fetchone():  # skip bc alr in database
+            continue
+
+        # add new track
+        cur.execute('''
+            INSERT INTO lastfm_tracks (track_name, artist, genre, duration)
+            VALUES (?, ?, ?, ?)
+        ''', (track['track_name'], track['artist'], track['genre'], track['duration']))
+
+        count_added += 1
 
     conn.commit()
     return count_added
 
 
 def main():
-    # connect to database (database must already be created)
-    conn = sqlite3.connect(db_name)
+    conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    # ❗ DELETE LINE REMOVED SO DATA ACCUMULATES
-    # cur.execute('DELETE FROM lastfm_tracks')
+    total_added = 0
 
-    for genre in genres:
-        print(f"\nFetching top {max_tracks} tracks for {genre}...")
+    # loop genre and add track to get to 25 limit
+    for genre in GENRES:
+        if total_added >= MAX_TRACKS_PER_RUN:
+            break
+
         tracks = fetch_lastfm_data(genre)
-        added = insert_tracks_into_db(tracks, cur, conn)
-        print(f"{added} tracks added for {genre}.")
+        remaining = MAX_TRACKS_PER_RUN - total_added
+        added = insert_new_tracks(tracks, cur, conn, remaining)
+        total_added += added
+
+        print(f"{added} tracks added for {genre}. Total added this run: {total_added}")
 
     conn.close()
 
 
 if __name__ == "__main__":
     main()
+
