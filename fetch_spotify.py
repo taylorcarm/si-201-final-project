@@ -2,6 +2,10 @@ import sqlite3
 import requests
 import base64
 
+import sqlite3
+import requests
+import base64
+
 # ----------------------------------------
 # 1. Spotify API Authentication
 # ----------------------------------------
@@ -17,14 +21,11 @@ def get_spotify_token():
         "Authorization": f"Basic {b64_auth}"
     }
 
-    data = {
-        "grant_type": "client_credentials"
-    }
+    data = {"grant_type": "client_credentials"}
 
     res = requests.post("https://accounts.spotify.com/api/token",
                         headers=headers, data=data)
-    token = res.json()["access_token"]
-    return token
+    return res.json().get("access_token")
 
 
 # ----------------------------------------
@@ -38,7 +39,9 @@ def get_songs_to_fetch():
     query = """
         SELECT id, track_name, artist
         FROM lastfm_tracks
-        WHERE id NOT IN (SELECT lastfm_id FROM spotify_features)
+        WHERE (track_name, artist) NOT IN (
+            SELECT track_name, artist FROM spotify_features
+        )
         LIMIT 25;
     """
 
@@ -65,13 +68,18 @@ def search_spotify_track(track_name, artist, token):
     r = requests.get(url, headers=headers, params=params).json()
 
     try:
-        return r["tracks"]["items"][0]["id"]
+        track = r["tracks"]["items"][0]
+        return {
+            "track_id": track["id"],
+            "track_name": track["name"],
+            "artist": track["artists"][0]["name"]
+        }
     except:
         return None
 
 
 # ----------------------------------------
-# 4. Get audio features for each track
+# 4. Get audio features
 # ----------------------------------------
 
 def get_audio_features(track_id, token):
@@ -92,22 +100,24 @@ def get_audio_features(track_id, token):
 # 5. Insert Spotify features into database
 # ----------------------------------------
 
-def insert_features(lastfm_id, features):
+def insert_features(track, features):
     conn = sqlite3.connect("music.sqlite")
     cur = conn.cursor()
 
     query = """
-        INSERT INTO spotify_features
-        (lastfm_id, tempo, energy, valence, danceability)
-        VALUES (?, ?, ?, ?, ?);
+        INSERT OR REPLACE INTO spotify_features
+        (track_id, track_name, artist, danceability, energy, valence, tempo)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     """
 
     cur.execute(query, (
-        lastfm_id,
-        features["tempo"],
+        track["track_id"],
+        track["track_name"],
+        track["artist"],
+        features["danceability"],
         features["energy"],
         features["valence"],
-        features["danceability"]
+        features["tempo"]
     ))
 
     conn.commit()
@@ -128,13 +138,13 @@ def main():
     for lastfm_id, track_name, artist in songs:
         print(f"\n🎵 Fetching: {track_name} — {artist}")
 
-        track_id = search_spotify_track(track_name, artist, token)
-        if not track_id:
+        track_info = search_spotify_track(track_name, artist, token)
+        if not track_info:
             print("   ❌ No Spotify match found")
             continue
 
-        features = get_audio_features(track_id, token)
-        insert_features(lastfm_id, features)
+        features = get_audio_features(track_info["track_id"], token)
+        insert_features(track_info, features)
 
         print("   ✔ Added features to database")
 
