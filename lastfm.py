@@ -12,7 +12,8 @@ import sqlite3
 DB_NAME = 'music.sqlite'
 LAST_FM_APIKEY = '46bcaf58397c885570ddf19732a63625'
 MAX_TRACKS_PER_RUN = 25
-GENRES = ['hip-hop', 'rock', 'rnb', 'pop']
+GENRES = ['hip-hop', 'rock', 'rnb', 'pop', 'jazz', 'country', 'metal', 'electronic',
+    'indie', 'classical', 'house', 'punk']
 
 
 def fetch_lastfm_data(genre):
