@@ -58,7 +58,7 @@ def fetch_deezer_data():
         results.append({
             # Connects Deezer info to lastfm_tracks
             'lastfm_id': lastfm_id,
-            # Uses Deezer title when available
+            # Uses Deezer title if available, otherwise keep original Last.fm track_name
             'track_name': track.get('title', track_name),
             # Finds artists name from Deezer
             'artist': track['artist']['name'],
@@ -118,5 +118,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
