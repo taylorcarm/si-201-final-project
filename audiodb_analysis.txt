@@ -1,0 +1,81 @@
+AudioDB Country Distribution
+===========================
+
+California, USA: 4 artists
+New York, USA: 3 artists
+Los Angeles, USA: 3 artists
+Los Angeles, California, USA: 3 artists
+London, England: 3 artists
+Toronto, Canada: 2 artists
+Ontario, Canada: 2 artists
+Nashville, Tennessee, USA: 2 artists
+Houston, Texas, USA: 2 artists
+Whitburn,Scotland: 1 artists
+Washington, USA: 1 artists
+Virginia, USA: 1 artists
+Tottenham, UK: 1 artists
+Texas, USA: 1 artists
+Tennessee, USA: 1 artists
+Syracuse, New York. U.S.: 1 artists
+Sydney, Australia: 1 artists
+Sumter, South Carolina (USA): 1 artists
+Sneedville, Tennessee, USA: 1 artists
+Sheffield, England: 1 artists
+Seattle, USA: 1 artists
+Sapporo, Japan: 1 artists
+Santa Monica, CA: 1 artists
+Saint Michael, Barbados: 1 artists
+Redditch, Worcestershire, England, UK: 1 artists
+Pennsylvania, USA: 1 artists
+Paterson, New Jersey, USA: 1 artists
+Oxford, England: 1 artists
+Oologah, Oklahoma, USA: 1 artists
+Norwood, Ontario, Canada: 1 artists
+Nigerian: 1 artists
+Newbury Park, California: 1 artists
+New York, NY, USA: 1 artists
+New York City, New York, USA: 1 artists
+New Orleans, Louisiana, USA: 1 artists
+New London, Connecticut, USA: 1 artists
+New Jersey, USA: 1 artists
+Nashville,USA: 1 artists
+Nashville, Tennessee: 1 artists
+Monroe, Washington, U.S.[2]: 1 artists
+Memphis, Tennessee, USA: 1 artists
+Melbourne, Victoria, Australia: 1 artists
+Maplewood, New Jersey, USA: 1 artists
+London, England, UK: 1 artists
+Limerick, Ireland: 1 artists
+Lexington, Kentucky, U.S.: 1 artists
+Lawrence County, American : 1 artists
+Las Vegas, Nevada, USA: 1 artists
+Lafayette,USA: 1 artists
+Hounslow, England: 1 artists
+Honolulu, Hawaii, USA: 1 artists
+Halifax, England: 1 artists
+Georgia, USA: 1 artists
+Florida: 1 artists
+Detroit, Michigan, USA: 1 artists
+Denmark: 1 artists
+Dallas, Texas, USA: 1 artists
+Conyers, Georgia: 1 artists
+Compton, California, USA: 1 artists
+Columbus, Ohio, USA: 1 artists
+Columbus, Ohio: 1 artists
+Colorado Springs, Colorado, USA: 1 artists
+Cleveland, Ohio: 1 artists
+Chicago, Illinois, USA: 1 artists
+Chicago, Illinois, U.S.: 1 artists
+Checotah, Oklahoma (USA): 1 artists
+Buffalo, New York, USA: 1 artists
+Bray, County Wicklow, Ireland: 1 artists
+Boca Raton, Florida: 1 artists
+Baltimore, Maryland (USA): 1 artists
+Atlanta, Georgia, USA: 1 artists
+Atlanta, Georgia: 1 artists
+Arkansas, USA: 1 artists
+Anaheim, California, USA : 1 artists
+American: 1 artists
+Alberta, Canada: 1 artists
+
+(Generated from SQLite AudioDB table)
