@@ -2,9 +2,7 @@ import requests
 import sqlite3
 import time
 
-# ============================================================
 #   CREATE TABLE
-# ============================================================
 
 def create_audiodb_table():
     conn = sqlite3.connect("music.sqlite")
@@ -27,9 +25,7 @@ def create_audiodb_table():
     conn.close()
 
 
-# ============================================================
 #   GET ARTISTS FROM DATABASE (UP TO 100)
-# ============================================================
 
 def get_artist_list_from_database():
     conn = sqlite3.connect("music.sqlite")
@@ -68,9 +64,7 @@ def get_artist_list_from_database():
   
 
 
-# ============================================================
 #   STORE ONE ARTIST RESULT
-# ============================================================
 
 def store_artist(info):
     conn = sqlite3.connect("music.sqlite")
@@ -94,9 +88,7 @@ def store_artist(info):
     conn.close()
 
 
-# ============================================================
 #   FETCH FROM APIs
-# ============================================================
 
 def fetch_audiodb_artists():
     create_audiodb_table()   # ensure table exists
@@ -122,9 +114,7 @@ def fetch_audiodb_artists():
     print("\nFinished fetching AudioDB artists.\n")
 
 
-# ============================================================
 #   CALCULATE + SAVE ANALYSIS
-# ============================================================
 
 def save_audiodb_analysis():
     conn = sqlite3.connect("music.sqlite")
@@ -153,9 +143,7 @@ def save_audiodb_analysis():
     print("Saved AudioDB analysis to audiodb_analysis.txt")
 
 
-# ============================================================
 #   RUN EVERYTHING
-# ============================================================
 
 if __name__ == "__main__":
     fetch_audiodb_artists()      # Fetch → store in DB
