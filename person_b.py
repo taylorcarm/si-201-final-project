@@ -33,7 +33,7 @@ def valence_explicit_lyric_calculation():
             ON l.id = d.lastfm_id
     '''
 
-    # Executes query and loads results into pandas DataFrame
+    # Executes query and loads results into a pandas DataFrame
     df = pd.read_sql_query(query, conn)
 
     # Closes database connection
@@ -70,10 +70,9 @@ def plot_valence_explicit(stats):
    
     # Draws bars
     # Uses green for non-explicit tracks and purple for explicit tracks 
-    # Black edging around bars to further distinguish
     plt.bar(x, y, color=['#4CAF50', '#800080'], edgecolor = 'black')
    
-    # Labels each bar for clarity
+    # Labels each bar for clarity (x-axis labels)
     plt.xticks([0,1], ['Non-Explicit', 'Explicit'])
    
     # Adds y-axis label
