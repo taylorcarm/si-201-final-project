@@ -63,11 +63,7 @@ def calculate_statistics(df):
     return stats
 
 
-
-# ============================
-# 🔥 FIRE VISUALIZATION #1 
 # SCATTERPLOT: ENERGY VS DANCEABILITY
-# ============================
 
 def plot_energy_vs_danceability(df):
     plt.figure(figsize=(8, 6))
@@ -86,10 +82,7 @@ def plot_energy_vs_danceability(df):
 
 
 
-# ============================
-# 🔥 FIRE VISUALIZATION #2
 # HISTOGRAM: TEMPO DISTRIBUTION
-# ============================
 
 def plot_tempo_histogram(df):
     plt.figure(figsize=(8, 6))
@@ -103,11 +96,7 @@ def plot_tempo_histogram(df):
     plt.show()
 
 
-
-# ============================
-# 🔥 FIRE VISUALIZATION #3
 # LINE GRAPH — VALENCE OVER TIME
-# ============================
 
 def plot_valence_over_time(df):
     df['year'] = df['release_date'].astype(str).str[:4]
@@ -127,9 +116,7 @@ def plot_valence_over_time(df):
 
 
 
-# ============================
 # RUN EVERYTHING
-# ============================
 
 df = load_full_dataset()
 stats = calculate_statistics(df)
