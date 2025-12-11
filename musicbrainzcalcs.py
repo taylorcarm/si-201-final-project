@@ -24,6 +24,10 @@ def plot_avg_deezer_rank():
         return
 
     avg_rank = df_rank.groupby('genre')['rank'].mean().sort_values().reset_index()
+    # Save average rank by genre
+    avg_rank.to_csv("TEXTavg_deezer_rank.txt", sep='\t', index=False)
+
+
 
     
     plt.figure(figsize=(10,6))
@@ -60,6 +64,10 @@ def plot_tracks_per_genre_per_country():
 
     # this is the data to plot
     country_data = df_country.pivot_table(index='country', columns='genre', aggfunc='size', fill_value=0)
+
+    # Save tracks per genre per country
+    country_data.to_csv("TEXTtracks_per_genre_per_country.txt", sep='\t', index=True)
+
 
     countries = country_data.index.tolist()
     genres = country_data.columns.tolist()
