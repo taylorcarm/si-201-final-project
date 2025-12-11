@@ -35,10 +35,10 @@ def load_joined_data():
     conn.close()
     return df
 
-
 def calculate_statistics(df):
     """
-    Performs meaningful calculations required by the project.
+    Performs meaningful calculations required by the project,
+    including optional MusicBrainz country data.
     """
 
     stats = {}
@@ -55,8 +55,46 @@ def calculate_statistics(df):
     # 4. Average Deezer rank by genre
     stats['avg_rank_by_genre'] = df.groupby('genre')['rank'].mean()
 
+    # 5. Genre vs. MusicBrainz release country (only if column exists)
+    if 'country' in df.columns:
+        stats['genre_vs_country'] = pd.crosstab(df['genre'], df['country'])
+    else:
+        stats['genre_vs_country'] = "No MusicBrainz country data available (join not loaded)"
+
     return stats
 
+import sqlite3
+import pandas as pd
+
+def load_full_dataset():
+    conn = sqlite3.connect("music.sqlite")
+
+    query = """
+        SELECT 
+            l.id,
+            l.track_name,
+            l.artist,
+            l.genre,
+            l.energy,
+            l.danceability,
+            l.valence,
+            l.explicit_lyrics,
+            l.rank,
+            m.country,
+            m.release_date,
+            m.album_title,
+            m.musicbrainz_id
+        FROM lastfm_tracks l
+        LEFT JOIN musicbrainz_data m
+            ON l.id = m.lastfm_id
+    """
+
+    df = load_full_dataset()
+    stats = calculate_statistics(df)
+
+    df = pd.read_sql(query, conn)
+    conn.close()
+    return df
 
 def print_results(stats):
     """
@@ -83,6 +121,12 @@ def print_results(stats):
     print("AVERAGE DEEZER RANK BY GENRE")
     print("==========================")
     print(stats['avg_rank_by_genre'])
+
+    print("\nGENRE VS MUSICBRAINZ COUNTRY")
+    print("============================")
+    print(stats['genre_vs_country'])
+
+
 
 
 def main():
