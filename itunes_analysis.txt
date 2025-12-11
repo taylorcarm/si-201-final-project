@@ -1,0 +1,25 @@
+iTunes Genre Frequency Analysis
+--------------------------------
+
+primaryGenreName
+Country              27
+Pop                  22
+Alternative          13
+R&B/Soul             10
+Hip-Hop/Rap           5
+Soundtrack            4
+Dance                 3
+Rock                  3
+K-Pop                 3
+Hard Rock             1
+Metal                 1
+Alte                  1
+Singer/Songwriter     1
+Holiday               1
+Indie Rock            1
+Urbano latino         1
+Christmas: Pop        1
+New Age               1
+Christian             1
+
+(Generated from SQLite database using iTunes API data)
