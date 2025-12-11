@@ -57,9 +57,7 @@ def fetch_itunes_data():
     print("iTunes data stored in SQLite successfully.\n")
 
 
-# ============================================================
-# 2. CALCULATE SOMETHING FROM DATABASE (Required by rubric)
-# ============================================================
+# 2. CALCULATION
 
 def calculate_genre_frequencies():
     conn = sqlite3.connect("music.sqlite")
@@ -72,9 +70,7 @@ def calculate_genre_frequencies():
     return genre_counts
 
 
-# ============================================================
-# 3. SAVE CALCULATIONS TO A TEXT FILE (Required by rubric)
-# ============================================================
+# 3. SAVE CALCULATIONS TO A TEXT FILE
 
 def save_itunes_analysis():
     results = calculate_genre_frequencies()
@@ -88,9 +84,8 @@ def save_itunes_analysis():
     print("Saved analysis to itunes_analysis.txt\n")
 
 
-# ============================================================
+
 # RUN EVERYTHING
-# ============================================================
 
 if __name__ == "__main__":
     fetch_itunes_data()      # Step 1: Fetch & store API → DB
