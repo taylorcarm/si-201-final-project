@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 
-# avergae deezer rank by genre (uses lastfm and deezer)
+# average deezer rank by genre (uses lastfm and deezer)
 def plot_avg_deezer_rank():
     conn = sqlite3.connect('music.sqlite')
 
