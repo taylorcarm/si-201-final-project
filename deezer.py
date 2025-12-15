@@ -15,10 +15,17 @@ def fetch_deezer_data():
 
     # Selects tracks from lastfm_tracks that are not already in deezer_data
     # Prevents duplicate data 
+    # cur.execute('''
+    #     SELECT id, track_name, artist
+    #     FROM lastfm_tracks
+    #     WHERE id NOT IN (SELECT lastfm_id FROM deezer_data)
+    # ''')
     cur.execute('''
-        SELECT id, track_name, artist
-        FROM lastfm_tracks
-        WHERE id NOT IN (SELECT lastfm_id FROM deezer_data)
+        SELECT l.id, t.track_name, a.artist_name
+        FROM lastfm_tracks l
+        JOIN tracks t ON l.track_id = t.id
+        JOIN artists a ON l.artist_id = a.id
+        WHERE l.id NOT IN (SELECT lastfm_id FROM deezer_data)
     ''')
     
     # Accesses tracks that still need Deezer data 

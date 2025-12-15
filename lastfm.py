@@ -42,30 +42,46 @@ def fetch_lastfm_data(genre):
 
 
 def insert_new_tracks(tracks, cur, conn, remaining_limit):
-    # insert only new tracks after cycling through genres, keep limti to 25
     count_added = 0
     for track in tracks:
         if count_added >= remaining_limit:
             break
 
-        # seeing if track exists
+        # 🔹 insert into tracks/artists/genres if not exist
+        cur.execute("INSERT OR IGNORE INTO tracks (track_name) VALUES (?)", (track['track_name'],))
+        cur.execute("INSERT OR IGNORE INTO artists (artist_name) VALUES (?)", (track['artist'],))
+        cur.execute("INSERT OR IGNORE INTO genres (genre_name) VALUES (?)", (track['genre'],))
+
+        # 🔹 get IDs
+        cur.execute("SELECT id FROM tracks WHERE track_name=?", (track['track_name'],))
+        track_id = cur.fetchone()[0]
+
+        cur.execute("SELECT id FROM artists WHERE artist_name=?", (track['artist'],))
+        artist_id = cur.fetchone()[0]
+
+        cur.execute("SELECT id FROM genres WHERE genre_name=?", (track['genre'],))
+        genre_id = cur.fetchone()[0]
+
+        # 🔹 check if this combination already exists in lastfm_tracks
         cur.execute('''
             SELECT id FROM lastfm_tracks
-            WHERE track_name=? AND artist=? AND genre=?
-        ''', (track['track_name'], track['artist'], track['genre']))
-        if cur.fetchone():  # skip bc alr in database
+            WHERE track_id=? AND artist_id=? AND genre_id=?
+        ''', (track_id, artist_id, genre_id))
+        if cur.fetchone():
             continue
 
-        # add new track
+        # 🔹 insert new track
         cur.execute('''
-            INSERT INTO lastfm_tracks (track_name, artist, genre, duration)
+            INSERT INTO lastfm_tracks (track_id, artist_id, genre_id, duration)
             VALUES (?, ?, ?, ?)
-        ''', (track['track_name'], track['artist'], track['genre'], track['duration']))
+        ''', (track_id, artist_id, genre_id, track['duration']))
 
         count_added += 1
 
     conn.commit()
     return count_added
+
+
 
 
 def main():

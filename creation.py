@@ -9,13 +9,33 @@ def create_database(db_name = 'music.sqlite'):
     conn = sqlite3.connect(db_name)
     cur = conn.cursor()
 
-    # Last.fm tracks table
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS tracks (
+            id INTEGER PRIMARY KEY,
+            track_name TEXT UNIQUE
+        )
+    ''')
+
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS artists (
+            id INTEGER PRIMARY KEY,
+            artist_name TEXT UNIQUE
+        )
+    ''')
+
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS genres (
+            id INTEGER PRIMARY KEY,
+            genre_name TEXT UNIQUE
+        )
+    ''')
+
     cur.execute('''
         CREATE TABLE IF NOT EXISTS lastfm_tracks (
             id INTEGER PRIMARY KEY,
-            track_name TEXT,
-            artist TEXT,
-            genre TEXT,
+            track_id INTEGER,
+            artist_id INTEGER,
+            genre_id INTEGER,
             duration INTEGER
         )
     ''')
@@ -36,18 +56,18 @@ def create_database(db_name = 'music.sqlite'):
     
     cur.execute('DROP TABLE IF EXISTS spotify_features')
 
-    
+
     cur.execute('''
-        CREATE TABLE spotify_features (
-            track_id TEXT PRIMARY KEY,
-            track_name TEXT,
-            artist TEXT,
+        CREATE TABLE IF NOT EXISTS spotify_features (
+            lastfm_track_id INTEGER PRIMARY KEY,
+            spotify_track_id TEXT,
             danceability REAL,
             energy REAL,
             valence REAL,
             tempo REAL
         )
     ''')
+
 
     # Lyrics data table (linked to lastfm_tracks via lastfm_id)
     cur.execute('''
@@ -58,13 +78,12 @@ def create_database(db_name = 'music.sqlite'):
         )
     ''')
 
-    cur.execute('''
+
+
+    cur.execute(''' 
         CREATE TABLE IF NOT EXISTS musicbrainz_data (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lastfm_id INTEGER NOT NULL,
-            musicbrainz_id TEXT,
-            release_title TEXT,
-            album_title TEXT,
             release_date TEXT,
             country TEXT,
             FOREIGN KEY(lastfm_id) REFERENCES lastfm_tracks(id)
