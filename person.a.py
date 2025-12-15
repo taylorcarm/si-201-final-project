@@ -63,11 +63,7 @@ def calculate_statistics(df):
     return stats
 
 
-
-# ============================
-# 🔥 FIRE VISUALIZATION #1 
 # SCATTERPLOT: ENERGY VS DANCEABILITY
-# ============================
 
 def plot_energy_vs_danceability(df):
     plt.figure(figsize=(8, 6))
@@ -86,10 +82,7 @@ def plot_energy_vs_danceability(df):
 
 
 
-# ============================
-# 🔥 FIRE VISUALIZATION #2
 # HISTOGRAM: TEMPO DISTRIBUTION
-# ============================
 
 def plot_tempo_histogram(df):
     plt.figure(figsize=(8, 6))
@@ -103,11 +96,7 @@ def plot_tempo_histogram(df):
     plt.show()
 
 
-
-# ============================
-# 🔥 FIRE VISUALIZATION #3
 # LINE GRAPH — VALENCE OVER TIME
-# ============================
 
 def plot_valence_over_time(df):
     df['year'] = df['release_date'].astype(str).str[:4]
@@ -127,12 +116,29 @@ def plot_valence_over_time(df):
 
 
 
-# ============================
 # RUN EVERYTHING
-# ============================
 
 df = load_full_dataset()
 stats = calculate_statistics(df)
+
+# 1️⃣ Save avg energy, danceability, valence
+stats['avg_energy_by_genre'].to_csv("TEXTavg_energy_by_genre.txt", sep='\t', header=True)
+stats['avg_danceability_by_genre'].to_csv("TEXTavg_danceability_by_genre.txt", sep='\t', header=True)
+stats['avg_valence_by_genre'].to_csv("TEXTavg_valence_by_genre.txt", sep='\t', header=True)
+
+# 2️⃣ Save avg tempo by genre
+avg_tempo = df.groupby('genre')['tempo'].mean().sort_values()
+avg_tempo.to_csv("TEXTavg_tempo_by_genre.txt", sep='\t', header=True)
+
+# 3️⃣ Save avg valence over time
+df['year'] = df['release_date'].astype(str).str[:4]
+df['year'] = pd.to_numeric(df['year'], errors='coerce')
+yearly_valence = df.groupby('year')['valence'].mean().dropna()
+yearly_valence.to_csv("TEXTyearly_valence.txt", sep='\t', header=True)
+
+# 4️⃣ Save avg tempo over time
+yearly_tempo = df.groupby('year')['tempo'].mean().dropna()
+yearly_tempo.to_csv("TEXTyearly_tempo.txt", sep='\t', header=True)
 
 plot_energy_vs_danceability(df)
 plot_tempo_histogram(df)

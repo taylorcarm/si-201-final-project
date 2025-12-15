@@ -1,0 +1,13 @@
+genre	rank
+classical	383638.0
+country	561889.24
+punk	608581.96
+jazz	608693.4
+house	682667.8333333334
+hip-hop	741249.52
+indie	749270.76
+metal	765564.92
+pop	800437.76
+rnb	806507.0
+electronic	819031.84
+rock	856071.6

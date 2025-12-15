@@ -92,4 +92,5 @@ def plot_valence_explicit(stats):
 
 # Runs analysis and creates visualization
 df, stats = valence_explicit_lyric_calculation()
+stats['explicit_vs_valence'].to_csv("TEXTaverage_valence_by_explicit.txt", sep='\t', header=True)
 plot_valence_explicit(stats)

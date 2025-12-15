@@ -1,9 +1,4 @@
 # DB_NAME = 'music.sqlite'
-# # do fetch data function and insert data function
-# # instert the info into deezer_data which will be a table in the one database
-# # the lastfm id will be the foreign key
-# # use track_name and artist from lastfm table to know which songs
-# # i think we want the rank and explicit lyrics info?
 
 import requests
 import sqlite3
