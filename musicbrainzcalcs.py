@@ -8,14 +8,25 @@ import matplotlib.pyplot as plt
 def plot_avg_deezer_rank():
     conn = sqlite3.connect('music.sqlite')
 
+    # sql = """
+    # SELECT l.genre, d.rank
+    # FROM lastfm_tracks l
+    # JOIN deezer_data d
+    #   ON l.id = d.lastfm_id
+    # WHERE l.genre IS NOT NULL
+    #   AND d.rank IS NOT NULL
+    # """
     sql = """
-    SELECT l.genre, d.rank
+    SELECT g.genre_name AS genre, d.rank
     FROM lastfm_tracks l
     JOIN deezer_data d
-      ON l.id = d.lastfm_id
-    WHERE l.genre IS NOT NULL
+        ON l.id = d.lastfm_id
+    JOIN genres g
+        ON l.genre_id = g.id
+    WHERE g.genre_name IS NOT NULL
       AND d.rank IS NOT NULL
     """
+
     df_rank = pd.read_sql_query(sql, conn)
     conn.close()
 
@@ -48,13 +59,16 @@ def plot_tracks_per_genre_per_country():
     conn = sqlite3.connect('music.sqlite')
 
     sql = """
-    SELECT l.genre, m.country
+    SELECT g.genre_name AS genre, m.country
     FROM lastfm_tracks l
     JOIN musicbrainz_data m
-      ON l.id = m.lastfm_id
-    WHERE l.genre IS NOT NULL
+        ON l.id = m.lastfm_id
+    JOIN genres g
+        ON l.genre_id = g.id
+    WHERE g.genre_name IS NOT NULL
       AND m.country IS NOT NULL
     """
+
     df_country = pd.read_sql_query(sql, conn)
     conn.close()
 
