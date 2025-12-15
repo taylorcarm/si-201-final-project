@@ -1,25 +1,23 @@
-iTunes Genre Frequency Analysis
---------------------------------
+Average iTunes Track Price by Genre
+=================================
 
-primaryGenreName
-Country              27
-Pop                  22
-Alternative          13
-R&B/Soul             10
-Hip-Hop/Rap           5
-Soundtrack            4
-Dance                 3
-Rock                  3
-K-Pop                 3
-Hard Rock             1
-Metal                 1
-Alte                  1
-Singer/Songwriter     1
-Holiday               1
-Indie Rock            1
-Urbano latino         1
-Christmas: Pop        1
-New Age               1
-Christian             1
-
-(Generated from SQLite database using iTunes API data)
+Alternative: $1.29
+Urbano latino: $1.29
+Rock: $1.29
+Rap: $1.29
+R&B/Soul: $1.29
+Pop: $1.29
+New Age: $1.29
+Musicals: $1.29
+Metal: $1.29
+K-Pop: $1.29
+Indie Rock: $1.29
+Holiday: $1.29
+Hip-Hop/Rap: $1.29
+Hard Rock: $1.29
+Christian: $1.29
+Country: $1.26
+Dance: $1.19
+Soundtrack: $1.14
+Alte: $0.99
+Christmas: Pop: $0.69
