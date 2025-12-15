@@ -13,23 +13,29 @@ def load_joined_data():
 
 
     query = """
-        SELECT 
-            l.id AS lastfm_id,
-            l.track_name,
-            l.artist,
-            l.genre,
-            d.rank,
-            d.explicit_lyrics,
-            s.danceability,
-            s.energy,
-            s.valence,
-            s.tempo
-        FROM lastfm_tracks l
-        JOIN deezer_data d ON l.id = d.lastfm_id
-        JOIN spotify_features s 
-            ON l.track_name = s.track_name
-            AND l.artist = s.artist;
+    SELECT
+        t.track_name,
+        g.genre_name AS genre,
+        d.rank,
+        d.explicit_lyrics,
+        s.danceability,
+        s.energy,
+        s.valence,
+        s.tempo
+    FROM lastfm_tracks l
+    JOIN tracks t
+        ON l.track_id = t.id
+    JOIN genres g
+        ON l.genre_id = g.id
+    JOIN deezer_data d
+        ON l.id = d.lastfm_id
+    JOIN spotify_features s
+        ON l.id = s.lastfm_track_id;
+
+
     """
+
+    
 
     df = pd.read_sql_query(query, conn)
     conn.close()
