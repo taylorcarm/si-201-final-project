@@ -25,12 +25,10 @@ def update_spotify_features_from_csv(csv_path=CSV_PATH, db_name=DB_NAME):
     conn = sqlite3.connect(db_name)
     cur = conn.cursor()
 
-    # Create spotify_features table if it doesn't exist
     cur.execute('''
         CREATE TABLE IF NOT EXISTS spotify_features (
             track_id TEXT PRIMARY KEY,
             track_name TEXT,
-            artist TEXT,
             danceability REAL,
             energy REAL,
             valence REAL,
@@ -39,34 +37,40 @@ def update_spotify_features_from_csv(csv_path=CSV_PATH, db_name=DB_NAME):
     ''')
 
     # Get tracks already in lastfm_tracks
-    cur.execute("SELECT track_name, artist FROM lastfm_tracks")
-    lastfm_tracks = set(cur.fetchall())  # set of (track_name, artist)
+  
+    cur.execute('''
+        SELECT t.track_name
+        FROM lastfm_tracks l
+        JOIN tracks t ON l.track_id = t.id
+    ''')
+    lastfm_track_names = {row[0] for row in cur.fetchall()}
+
 
     # # Filter CSV to only include tracks that exist in lastfm_tracks
-    # df_to_insert = df[df.apply(lambda row: (row['track_name'], row['artist']) in lastfm_tracks, axis=1)]
-    # Filter CSV to only include tracks that exist in lastfm_tracks
-    df_to_insert = df[df.apply(lambda row: (row['track_name'], row['artist']) in lastfm_tracks, axis=1)]
+  
+    df_to_insert = df[df['track_name'].isin(lastfm_track_names)]
+
 
     # Remove duplicate songs (multiple Spotify IDs → keep first)
-    df_to_insert = df_to_insert.drop_duplicates(subset=['track_name', 'artist'])
+    df_to_insert = df_to_insert.drop_duplicates(subset=['track_name'])
 
     print(f"Found {len(df_to_insert)} tracks from CSV that are in lastfm_tracks.")
 
-    # Insert or update each track
+   
     for _, row in df_to_insert.iterrows():
         cur.execute('''
             INSERT OR REPLACE INTO spotify_features
-            (track_id, track_name, artist, danceability, energy, valence, tempo)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (track_id, track_name, danceability, energy, valence, tempo)
+            VALUES (?, ?, ?, ?, ?, ?)
         ''', (
             row['track_id'],
             row['track_name'],
-            row['artist'],
             row['danceability'],
             row['energy'],
             row['valence'],
             row['tempo']
         ))
+    
 
     conn.commit()
     conn.close()

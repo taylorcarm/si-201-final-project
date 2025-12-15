@@ -12,36 +12,28 @@ import matplotlib.pyplot as plt
 def load_full_dataset():
     conn = sqlite3.connect("music.sqlite")
 
+
     query = """
-        SELECT
-            l.id,
-            l.track_name,
-            l.artist,
-            l.genre,
-            l.duration,
+        SELECT 
+        l.id AS lastfm_id, 
+        t.track_name, 
+        a.artist_name AS artist, 
+        g.genre_name AS genre, 
+        l.duration, 
+        s.danceability, 
+        s.energy, 
+        s.valence, 
+        s.tempo, 
+        m.country, 
+        m.release_date
+    FROM lastfm_tracks l
+    JOIN tracks t ON l.track_id = t.id
+    JOIN artists a ON l.artist_id = a.id
+    JOIN genres g ON l.genre_id = g.id
+    LEFT JOIN spotify_features s ON t.track_name = s.track_name
+    LEFT JOIN musicbrainz_data m ON l.id = m.lastfm_id
 
-            -- Spotify audio features
-            s.danceability,
-            s.energy,
-            s.valence,
-            s.tempo,
-
-            -- MusicBrainz metadata
-            m.country,
-            m.release_date,
-            m.album_title,
-            m.musicbrainz_id
-
-        FROM lastfm_tracks l
-
-        LEFT JOIN spotify_features s
-            ON l.track_name = s.track_name
-            AND l.artist = s.artist
-
-        LEFT JOIN musicbrainz_data m
-            ON l.id = m.lastfm_id
     """
-
     df = pd.read_sql(query, conn)
     conn.close()
     return df

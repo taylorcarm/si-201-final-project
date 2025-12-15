@@ -13,25 +13,22 @@ def valence_explicit_lyric_calculation():
     # Connects to SQLite database 
     conn = sqlite3.connect(DB_NAME)
 
-    # JOIN query 
-    # Combines last.fm tracks with Spotify audio features and Deezer explicit lyric data
-    # l, s, and d represent short names for each table to make column references cleaner 
-    # l = lastfm_tracks (track name, artist, genre)
-    # s = spotify_features (valence score)
-    # d = deezer_data (explicit lyrics)
+
     query = '''
-        SELECT
-            s.valence,
-            d.explicit_lyrics,
-            l.genre,
-            l.track_name,
-            l.artist
-        FROM lastfm_tracks l
-        JOIN spotify_features s
-            ON l.track_name = s.track_name AND l.artist = s.artist
-        JOIN deezer_data d
-            ON l.id = d.lastfm_id
-    '''
+        SELECT 
+        s.valence, 
+        d.explicit_lyrics, 
+        g.genre_name AS genre, 
+        t.track_name, 
+        a.artist_name AS artist
+    FROM lastfm_tracks l
+    JOIN tracks t ON l.track_id = t.id
+    JOIN artists a ON l.artist_id = a.id
+    JOIN genres g ON l.genre_id = g.id
+    JOIN spotify_features s ON t.track_name = s.track_name
+    JOIN deezer_data d ON l.id = d.lastfm_id
+
+'''
 
     # Executes query and loads results into a pandas DataFrame
     df = pd.read_sql_query(query, conn)

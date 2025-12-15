@@ -23,37 +23,38 @@ def search_musicbrainz(track_name, artist_name):
             return None
         return recordings[0]
     except:
-        print("Error fetching MusicBrainz data for {} by {}".format(track_name, artist_name))
+        #print("Error fetching MusicBrainz data for {} by {}".format(track_name, artist_name))
         return None
+
 
 def insert_musicbrainz_data(cur, lastfm_id, mb_data):
     if mb_data is None:
         return
-    musicbrainz_id = mb_data.get('id')
-    release_title = mb_data.get('title')
-    album_title = None
+
     release_date = None
     country = None
     releases = mb_data.get('releases', [])
     if len(releases) > 0:
         release = releases[0]
-        album_title = release.get('title')
         release_date = release.get('date')
         country = release.get('country')
+
     cur.execute("""
         INSERT OR REPLACE INTO musicbrainz_data
-        (lastfm_id, musicbrainz_id, release_title, album_title, release_date, country)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (lastfm_id, musicbrainz_id, release_title, album_title, release_date, country))
+        (lastfm_id, release_date, country)
+        VALUES (?, ?, ?)
+    """, (lastfm_id, release_date, country))
 
 def main():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    # Get up to 25 tracks not already in musicbrainz_data
     cur.execute("""
-        SELECT id, track_name, artist FROM lastfm_tracks
-        WHERE id NOT IN (SELECT lastfm_id FROM musicbrainz_data)
+        SELECT l.id, t.track_name, a.artist_name
+        FROM lastfm_tracks l
+        JOIN tracks t ON l.track_id = t.id
+        JOIN artists a ON l.artist_id = a.id
+        WHERE l.id NOT IN (SELECT lastfm_id FROM musicbrainz_data)
         LIMIT 25
     """)
     tracks = cur.fetchall()
@@ -62,7 +63,7 @@ def main():
     for lastfm_id, track_name, artist_name in tracks:
         mb_data = search_musicbrainz(track_name, artist_name)
         insert_musicbrainz_data(cur, lastfm_id, mb_data)
-        print("Processed", track_name, "by", artist_name)
+        #print("Processed", track_name, "by", artist_name)
 
     conn.commit()
     print("Inserted {} tracks into the database.".format(len(tracks)))
