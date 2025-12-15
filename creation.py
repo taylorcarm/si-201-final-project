@@ -56,16 +56,16 @@ def create_database(db_name = 'music.sqlite'):
     
     cur.execute('DROP TABLE IF EXISTS spotify_features')
 
-    
+
     cur.execute('''
         CREATE TABLE IF NOT EXISTS spotify_features (
-        track_id TEXT PRIMARY KEY,
-        track_name TEXT,
-        danceability REAL,
-        energy REAL,
-        valence REAL,
-        tempo REAL
-    )
+            lastfm_track_id INTEGER PRIMARY KEY,
+            spotify_track_id TEXT,
+            danceability REAL,
+            energy REAL,
+            valence REAL,
+            tempo REAL
+        )
     ''')
 
 

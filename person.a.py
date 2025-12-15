@@ -12,8 +12,7 @@ import matplotlib.pyplot as plt
 def load_full_dataset():
     conn = sqlite3.connect("music.sqlite")
 
-
-    query = """
+    query = '''
         SELECT 
         l.id AS lastfm_id, 
         t.track_name, 
@@ -30,10 +29,10 @@ def load_full_dataset():
     JOIN tracks t ON l.track_id = t.id
     JOIN artists a ON l.artist_id = a.id
     JOIN genres g ON l.genre_id = g.id
-    LEFT JOIN spotify_features s ON t.track_name = s.track_name
+    LEFT JOIN spotify_features s ON l.id = s.lastfm_track_id
     LEFT JOIN musicbrainz_data m ON l.id = m.lastfm_id
+    '''
 
-    """
     df = pd.read_sql(query, conn)
     conn.close()
     return df

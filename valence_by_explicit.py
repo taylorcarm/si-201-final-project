@@ -13,22 +13,21 @@ def valence_explicit_lyric_calculation():
     # Connects to SQLite database 
     conn = sqlite3.connect(DB_NAME)
 
-
     query = '''
         SELECT 
-        s.valence, 
-        d.explicit_lyrics, 
-        g.genre_name AS genre, 
-        t.track_name, 
-        a.artist_name AS artist
-    FROM lastfm_tracks l
-    JOIN tracks t ON l.track_id = t.id
-    JOIN artists a ON l.artist_id = a.id
-    JOIN genres g ON l.genre_id = g.id
-    JOIN spotify_features s ON t.track_name = s.track_name
-    JOIN deezer_data d ON l.id = d.lastfm_id
+            s.valence, 
+            d.explicit_lyrics, 
+            g.genre_name AS genre, 
+            t.track_name, 
+            a.artist_name AS artist
+        FROM lastfm_tracks l
+        JOIN tracks t ON l.track_id = t.id
+        JOIN artists a ON l.artist_id = a.id
+        JOIN genres g ON l.genre_id = g.id
+        JOIN spotify_features s ON l.id = s.lastfm_track_id
+        JOIN deezer_data d ON l.id = d.lastfm_id
+    '''
 
-'''
 
     # Executes query and loads results into a pandas DataFrame
     df = pd.read_sql_query(query, conn)
