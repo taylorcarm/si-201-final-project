@@ -2,10 +2,6 @@ import sqlite3
 import requests
 import base64
 
-import sqlite3
-import requests
-import base64
-
 # ----------------------------------------
 # 1. Spotify API Authentication
 # ----------------------------------------
