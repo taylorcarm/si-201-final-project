@@ -1,3 +1,4 @@
+
 import sqlite3
 import requests
 
@@ -7,27 +8,24 @@ def main():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    # Make sure table exists (safe to keep)
+    # Make sure itunes_tracks table exists
     cur.execute("""
         CREATE TABLE IF NOT EXISTS itunes_tracks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             track_name TEXT,
-            artist_name TEXT,
-            genre TEXT,
+            artist_id INTEGER,
+            genre_id INTEGER,
             track_price REAL,
-            UNIQUE(track_name, artist_name)
-        );
+            FOREIGN KEY (artist_id) REFERENCES artists(id),
+            FOREIGN KEY (genre_id) REFERENCES genres(id),
+            UNIQUE(track_name, artist_id)
+        )
     """)
 
     url = "https://itunes.apple.com/search"
-    params = {
-        "term": "music",
-        "entity": "song",
-        "limit": 200
-    }
-
+    params = {"term": "music", "entity": "song", "limit": 200}
     r = requests.get(url, params=params)
-    data = r.json()["results"]
+    data = r.json().get("results", [])
 
     for item in data:
         track = item.get("trackName")
@@ -35,15 +33,30 @@ def main():
         genre = item.get("primaryGenreName")
         price = item.get("trackPrice")
 
+        # Skip if track, artist, or genre is missing
+        if not track or not artist or not genre:
+            continue
+
+        # Insert artist and get ID
+        cur.execute("INSERT OR IGNORE INTO artists (artist_name) VALUES (?)", (artist,))
+        cur.execute("SELECT id FROM artists WHERE artist_name = ?", (artist,))
+        artist_id = cur.fetchone()[0]
+
+        # Insert genre and get ID
+        cur.execute("INSERT OR IGNORE INTO genres (genre_name) VALUES (?)", (genre,))
+        cur.execute("SELECT id FROM genres WHERE genre_name = ?", (genre,))
+        genre_id = cur.fetchone()[0]
+
+        # Insert track
         cur.execute("""
             INSERT OR IGNORE INTO itunes_tracks
-            (track_name, artist_name, genre, track_price)
+            (track_name, artist_id, genre_id, track_price)
             VALUES (?, ?, ?, ?)
-        """, (track, artist, genre, price))
+        """, (track, artist_id, genre_id, price))
 
     conn.commit()
     conn.close()
-    print("Inserted iTunes tracks")
+    print("Inserted iTunes tracks into main database!")
 
 if __name__ == "__main__":
     main()

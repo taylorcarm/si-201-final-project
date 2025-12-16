@@ -11,14 +11,6 @@ def update_spotify_features_from_csv(csv_path=CSV_PATH, db_name=DB_NAME):
 
     df = pd.read_csv(csv_path)
 
-    # Rename column if necessary
-    if 'artists' in df.columns and 'artist' not in df.columns:
-        df = df.rename(columns={'artists': 'artist'})
-
-    required_columns = ['track_id', 'track_name', 'artist', 'danceability', 'energy', 'valence', 'tempo']
-    if not all(col in df.columns for col in required_columns):
-        raise ValueError(f"CSV must contain columns: {required_columns}")
-
     conn = sqlite3.connect(db_name)
     cur = conn.cursor()
 

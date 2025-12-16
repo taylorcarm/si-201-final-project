@@ -1,3 +1,4 @@
+
 import sqlite3
 
 DB_NAME = "music.sqlite"
@@ -8,10 +9,11 @@ def main():
 
     # Calculate average price by genre
     query = """
-    SELECT genre, AVG(track_price) AS avg_price
-    FROM itunes_tracks
-    WHERE track_price IS NOT NULL
-    GROUP BY genre
+    SELECT g.genre_name, AVG(t.track_price) AS avg_price
+    FROM itunes_tracks t
+    JOIN genres g ON t.genre_id = g.id
+    WHERE t.track_price IS NOT NULL
+    GROUP BY g.genre_name
     ORDER BY avg_price DESC;
     """
 
@@ -21,8 +23,7 @@ def main():
     # Write results to file
     with open("itunes_analysis.txt", "w") as f:
         f.write("Average iTunes Track Price by Genre\n")
-        f.write("=================================\n\n")
-
+        f.write("==\n\n")
         for genre, avg_price in results:
             f.write(f"{genre}: ${avg_price:.2f}\n")
 

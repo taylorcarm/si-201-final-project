@@ -47,12 +47,12 @@ def insert_new_tracks(tracks, cur, conn, remaining_limit):
         if count_added >= remaining_limit:
             break
 
-        # 🔹 insert into tracks/artists/genres if not exist
+        # insert into tracks/artists/genres if not exist
         cur.execute("INSERT OR IGNORE INTO tracks (track_name) VALUES (?)", (track['track_name'],))
         cur.execute("INSERT OR IGNORE INTO artists (artist_name) VALUES (?)", (track['artist'],))
         cur.execute("INSERT OR IGNORE INTO genres (genre_name) VALUES (?)", (track['genre'],))
 
-        # 🔹 get IDs
+        # get IDs
         cur.execute("SELECT id FROM tracks WHERE track_name=?", (track['track_name'],))
         track_id = cur.fetchone()[0]
 
@@ -62,7 +62,7 @@ def insert_new_tracks(tracks, cur, conn, remaining_limit):
         cur.execute("SELECT id FROM genres WHERE genre_name=?", (track['genre'],))
         genre_id = cur.fetchone()[0]
 
-        # 🔹 check if this combination already exists in lastfm_tracks
+        # check if this combination already exists in lastfm_tracks
         cur.execute('''
             SELECT id FROM lastfm_tracks
             WHERE track_id=? AND artist_id=? AND genre_id=?
@@ -70,7 +70,7 @@ def insert_new_tracks(tracks, cur, conn, remaining_limit):
         if cur.fetchone():
             continue
 
-        # 🔹 insert new track
+        # insert new track
         cur.execute('''
             INSERT INTO lastfm_tracks (track_id, artist_id, genre_id, duration)
             VALUES (?, ?, ?, ?)
