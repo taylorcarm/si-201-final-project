@@ -1,23 +1,26 @@
 Average iTunes Track Price by Genre
 =================================
 
-Alternative: $1.29
 Urbano latino: $1.29
 Rock: $1.29
 Rap: $1.29
 R&B/Soul: $1.29
 Pop: $1.29
 New Age: $1.29
+Música Mexicana: $1.29
 Musicals: $1.29
 Metal: $1.29
+Latin: $1.29
 K-Pop: $1.29
 Indie Rock: $1.29
 Holiday: $1.29
 Hip-Hop/Rap: $1.29
 Hard Rock: $1.29
 Christian: $1.29
-Country: $1.26
-Dance: $1.19
+Alternative: $1.29
+Country: $1.27
+Dance: $1.23
 Soundtrack: $1.14
 Alte: $0.99
 Christmas: Pop: $0.69
+Children's Music: $0.69
