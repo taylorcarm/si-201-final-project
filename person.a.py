@@ -2,12 +2,6 @@ import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
 
-import sqlite3
-import pandas as pd
-import matplotlib.pyplot as plt
-
-
-
 
 def load_full_dataset():
     conn = sqlite3.connect("music.sqlite")
