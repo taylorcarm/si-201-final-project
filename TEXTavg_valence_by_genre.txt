@@ -1,7 +1,13 @@
 genre	valence
-country	
-hip-hop	
-jazz	
-pop	
-rnb	
-rock	
+classical	0.1494
+country	0.5380
+electronic	0.5671
+hip-hop	0.4364
+house	0.4613
+indie	0.3948
+jazz	0.4922
+metal	0.4115
+pop	0.5343
+punk	0.6371
+rnb	0.3378
+rock	0.3663

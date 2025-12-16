@@ -21,7 +21,9 @@ def load_joined_data():
         s.danceability,
         s.energy,
         s.valence,
-        s.tempo
+        s.tempo,
+        m.release_date,
+        m.country
     FROM lastfm_tracks l
     JOIN tracks t
         ON l.track_id = t.id
@@ -30,9 +32,9 @@ def load_joined_data():
     JOIN deezer_data d
         ON l.id = d.lastfm_id
     JOIN spotify_features s
-        ON l.id = s.lastfm_track_id;
-
-
+        ON l.id = s.lastfm_track_id
+    LEFT JOIN musicbrainz_data m
+        ON l.id = m.lastfm_id;
     """
 
     
@@ -55,13 +57,30 @@ def calculate_statistics(df):
     # 2. Average danceability by genre
     stats['avg_danceability_by_genre'] = df.groupby('genre')['danceability'].mean()
 
-    # 3. Correlation between valence (happiness) and explicit lyrics
+    # 3. Average tempo by genre
+    stats['avg_tempo_by_genre'] = df.groupby('genre')['tempo'].mean()
+
+    # 4. Average valence by genre
+    stats['avg_valence_by_genre'] = df.groupby('genre')['valence'].mean() 
+
+    # 5. Correlation between valence (happiness) and explicit lyrics
     stats['explicit_vs_valence'] = df.groupby('explicit_lyrics')['valence'].mean()
 
-    # 4. Average Deezer rank by genre
+    # 6. Average Deezer rank by genre
     stats['avg_rank_by_genre'] = df.groupby('genre')['rank'].mean()
 
-    # 5. Genre vs. MusicBrainz release country (only if column exists)
+    # 7. Extract year from release_date and calculate yearly tempo
+    if 'release_date' in df.columns:
+        df_with_year = df.copy()
+        df_with_year['year'] = pd.to_datetime(df_with_year['release_date'], errors='coerce').dt.year
+        df_with_year = df_with_year.dropna(subset=['year'])
+        stats['yearly_tempo'] = df_with_year.groupby('year')['tempo'].mean()
+        stats['yearly_valence'] = df_with_year.groupby('year')['valence'].mean()
+    else:
+        stats['yearly_tempo'] = "No release_date data available"
+        stats['yearly_valence'] = "No release_date data available"
+
+    # 8. Genre vs. MusicBrainz release country (only if column exists)
     if 'country' in df.columns:
         stats['genre_vs_country'] = pd.crosstab(df['genre'], df['country'])
     else:
@@ -72,35 +91,54 @@ def calculate_statistics(df):
 import sqlite3
 import pandas as pd
 
-def load_full_dataset():
-    conn = sqlite3.connect("music.sqlite")
-
-    query = """
-        SELECT 
-            l.id,
-            l.track_name,
-            l.artist,
-            l.genre,
-            l.energy,
-            l.danceability,
-            l.valence,
-            l.explicit_lyrics,
-            l.rank,
-            m.country,
-            m.release_date,
-            m.album_title,
-            m.musicbrainz_id
-        FROM lastfm_tracks l
-        LEFT JOIN musicbrainz_data m
-            ON l.id = m.lastfm_id
+def save_results_to_files(stats):
     """
+    Saves each calculation to a separate text file.
+    """
+    with open("TEXTavg_energy_by_genre.txt", "w") as f:
+        f.write("genre\tenergy\n")
+        for genre, value in stats['avg_energy_by_genre'].items():
+            f.write(f"{genre}\t{value:.4f}\n")
 
-    df = load_full_dataset()
-    stats = calculate_statistics(df)
+    with open("TEXTavg_danceability_by_genre.txt", "w") as f:
+        f.write("genre\tdanceability\n")
+        for genre, value in stats['avg_danceability_by_genre'].items():
+            f.write(f"{genre}\t{value:.4f}\n")
 
-    df = pd.read_sql(query, conn)
-    conn.close()
-    return df
+    with open("TEXTavg_tempo_by_genre.txt", "w") as f:
+        f.write("genre\ttempo\n")
+        for genre, value in stats['avg_tempo_by_genre'].items():
+            f.write(f"{genre}\t{value:.4f}\n")
+
+    with open("TEXTavg_valence_by_genre.txt", "w") as f:
+        f.write("genre\tvalence\n")
+        for genre, value in stats['avg_valence_by_genre'].items():
+            f.write(f"{genre}\t{value:.4f}\n")
+
+    with open("TEXTexplicit_valence_stats.txt", "w") as f:
+        f.write("explicit_lyrics\tvalence\n")
+        for explicit, value in stats['explicit_vs_valence'].items():
+            f.write(f"{explicit}\t{value:.4f}\n")
+
+    with open("TEXTavg_deezer_rank.txt", "w") as f:
+        f.write("genre\trank\n")
+        for genre, value in stats['avg_rank_by_genre'].items():
+            f.write(f"{genre}\t{value:.4f}\n")
+
+    if isinstance(stats['yearly_tempo'], pd.Series):
+        with open("TEXTyearly_tempo.txt", "w") as f:
+            f.write("year\ttempo\n")
+            for year, value in stats['yearly_tempo'].items():
+                f.write(f"{int(year)}\t{value:.4f}\n")
+
+    if isinstance(stats['yearly_valence'], pd.Series):
+        with open("TEXTyearly_valence.txt", "w") as f:
+            f.write("year\tvalence\n")
+            for year, value in stats['yearly_valence'].items():
+                f.write(f"{int(year)}\t{value:.4f}\n")
+
+    print("\nAll results saved to text files!")
+
 
 def print_results(stats):
     """
@@ -146,6 +184,9 @@ def main():
 
     print("\nDONE! Here are your results:")
     print_results(stats)
+
+    print("\nSaving results to files")
+    save_results_to_files(stats)
 
 
 if __name__ == "__main__":

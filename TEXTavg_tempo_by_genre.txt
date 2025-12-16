@@ -1,7 +1,13 @@
 genre	tempo
-country	
-hip-hop	
-jazz	
-pop	
-rnb	
-rock	
+classical	84.2230
+country	133.1433
+electronic	126.2009
+hip-hop	134.1526
+house	126.3230
+indie	113.1307
+jazz	123.3869
+metal	117.1131
+pop	118.4816
+punk	136.8795
+rnb	130.1873
+rock	123.6479

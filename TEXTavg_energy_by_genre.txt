@@ -1,7 +1,13 @@
 genre	energy
-country	
-hip-hop	
-jazz	
-pop	
-rnb	
-rock	
+classical	0.1298
+country	0.5868
+electronic	0.7229
+hip-hop	0.6522
+house	0.7250
+indie	0.6927
+jazz	0.3502
+metal	0.8725
+pop	0.7156
+punk	0.8771
+rnb	0.5980
+rock	0.6839
